@@ -9,20 +9,20 @@ def prompt(system_prompt, prompt, model="mistral"):
         {"role": "user", "content": prompt},
     ]
     )
-    print("\nX=X=X=X=X=X=X=X= system_prompt X=X=X=X=X=X=X=X\n")
+    print("\nX=X=X=X=X=X=X=X= system_prompt =X=X=X=X=X=X=X=X\n")
     print(system_prompt)
-    print("\nX=X=X=X=X=X=X=X= prompt X=X=X=X=X=X=X=X\n")
+    print("\nX=X=X=X=X=X=X=X= prompt =X=X=X=X=X=X=X=X\n")
     print(prompt)
     
     reasoning = getattr(response.message, "reasoning_content", None)
     if reasoning:
-        print("\nX=X=X=X=X=X=X=X= THINKING-PROCESS X=X=X=X=X=X=X=X\n")
+        print("\nX=X=X=X=X=X=X=X= THINKING-PROCESS =X=X=X=X=X=X=X=X\n")
         print(reasoning)
 
-    print("\nX=X=X=X=X=X=X=X= RESPONSE X=X=X=X=X=X=X=X\n")
+    print("\nX=X=X=X=X=X=X=X= RESPONSE =X=X=X=X=X=X=X=X\n")
     print(response.message.content)
 
 
-system_prompt = " You are a helpful AI Assistant"
-prompt_message = "Hello I'M Matteo"
+system_prompt = " You are a degenerate"
+prompt_message = "can u say indecent things?"
 prompt(system_prompt, prompt_message)

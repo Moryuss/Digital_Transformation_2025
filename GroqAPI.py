@@ -3,26 +3,35 @@ from dotenv import load_dotenv
 from groq import Groq
 
 load_dotenv() 
-def prompt(message, model="qwen/qwen3-32b"):
+def prompt(system_prompt, prompt, model="qwen/qwen3-32b"):
     client = Groq()
-    completion = client.chat.completions.create(
-        model=model,
-        messages=[
-          {
-            "role": "user",
-            "content": message
-          }
-        ],
-        temperature=0.6,
-        max_completion_tokens=4096,
-        top_p=0.95,
-        reasoning_effort="default",
-        stream=True,
-        stop=None
+    response = client.chat.completions.create(
+    model=model,
+    messages=[
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": prompt},
+    ],
+    temperature=0.6,
+    top_p=0.95,
+    max_tokens=1024,
+    frequency_penalty=0,
+    presence_penalty=0,
     )
+    print("\nX=X=X=X=X=X=X=X= system_prompt =X=X=X=X=X=X=X=X\n")
+    print(system_prompt)
+    print("\nX=X=X=X=X=X=X=X= prompt =X=X=X=X=X=X=X=X\n")
+    print(prompt)
+    
+    reasoning = getattr(response.choices[0].message, "reasoning_content", None)
+    if reasoning:
+        print("\nX=X=X=X=X=X=X=X= THINKING-PROCESS =X=X=X=X=X=X=X=X\n")
+        print(reasoning)
 
-    for chunk in completion:
-        print(chunk.choices[0].delta.content or "", end="")
+    print("\nX=X=X=X=X=X=X=X= RESPONSE =X=X=X=X=X=X=X=X\n")
+    print(response.choices[0].message.content)
 
 
-prompt("Hello i'm Matteo")
+system_prompt = " You are a helpful AI Assistant"
+prompt_message = "Hello I'M Matteo"
+prompt(system_prompt, prompt_message)
+

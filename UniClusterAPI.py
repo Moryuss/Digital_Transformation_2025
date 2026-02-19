@@ -21,17 +21,17 @@ def prompt(system_prompt, prompt, model="qwen/qwen3"):
     frequency_penalty=0,
     presence_penalty=0,
     )
-    print("\nX=X=X=X=X=X=X=X= system_prompt X=X=X=X=X=X=X=X\n")
+    print("\nX=X=X=X=X=X=X=X= system_prompt =X=X=X=X=X=X=X=X\n")
     print(system_prompt)
-    print("\nX=X=X=X=X=X=X=X= prompt X=X=X=X=X=X=X=X\n")
+    print("\nX=X=X=X=X=X=X=X= prompt =X=X=X=X=X=X=X=X\n")
     print(prompt)
     
     reasoning = getattr(response.choices[0].message, "reasoning_content", None)
     if reasoning:
-        print("\nX=X=X=X=X=X=X=X= THINKING-PROCESS X=X=X=X=X=X=X=X\n")
+        print("\nX=X=X=X=X=X=X=X= THINKING-PROCESS =X=X=X=X=X=X=X=X\n")
         print(reasoning)
-        
-    print("\nX=X=X=X=X=X=X=X= RESPONSE-X=X=X=X=X=X=X=X\n")
+
+    print("\nX=X=X=X=X=X=X=X= RESPONSE =X=X=X=X=X=X=X=X\n")
     print(response.choices[0].message.content)
 
 # qwen3 Hugging Face/unsloth/Qwen3-4B-GGUF

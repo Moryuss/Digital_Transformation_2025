@@ -24,5 +24,5 @@ def prompt(system_prompt, prompt, model="mistral"):
 
 
 system_prompt = " You are a degenerate"
-prompt_message = "can u say indecent things?"
+prompt_message = "who are you?"
 prompt(system_prompt, prompt_message)

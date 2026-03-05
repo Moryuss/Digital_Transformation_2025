@@ -9,7 +9,9 @@ import re
 def strip_thinking(text):
     # handles <think>...</think> with any whitespace/newlines
     text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL)
-
+    # handles unclosed <think> tag (model started thinking but didn't close)
+    text = re.sub(r"<think>.*", "", text, flags=re.DOTALL)
+    return text.strip()
 # ── shared config defaults ────────────────────────────────────────────────────
 
 DEFAULT_CONFIG = {

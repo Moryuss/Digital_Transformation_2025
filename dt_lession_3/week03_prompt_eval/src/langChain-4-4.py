@@ -25,12 +25,6 @@ data_path = os.path.join(base_dir, "data")
 chroma_path = os.path.join(base_dir, "chroma")
 
 
-# Create a Groq chat model instance
-# model = ChatGroq(
-#     model="qwen/qwen3-32b",  
-#     temperature=0
-# )
-
 model = ChatOpenAI(
     model="qwen3",
     api_key=os.environ["GPUSTACK_API_KEY"],  
@@ -42,6 +36,7 @@ modelEmbedding = OpenAIEmbeddings(
     api_key=os.environ["GPUSTACK_API_KEY"],  
     base_url="https://gpustack.ing.unibs.it/v1"
 )
+
 
 # Messages (history)
 
@@ -84,10 +79,27 @@ vector_store = Chroma(
 vector_store.add_documents(documents=db_docs, ids=db_ids)
 
 
-results = vector_store.similarity_search(
-    "Multi-Head Attention",
+system_msg = SystemMessage('''You are a helpful assistant. 
+                           Answer the users QUESTION using the DOCUMENTS text given to you.
+                           Keep your answer ground in the facts of the DOCUMENT.
+                           If the DOCUMENT doesn't contain the facts to answer the QUESTION say <<No information regarding {argument} were found in the documents>>
+                           EVEN IF you know he answer, if it is not written in the Documents then do not tell me''')
+human_msg = HumanMessage("Hello, can you explain what is oassododd?")
+ai_msg = AIMessage("")  # to give a start to the ai
+
+rag_result = vector_store.similarity_search(
+    human_msg.content,
     k=2
 )
-for res in results:
-    print(f"* {res.page_content} [{res.metadata}]")
-    print(res)
+
+rag_message = ""
+for i, r in enumerate(rag_result): 
+    rag_message += "DOCUMENT " + str(i) + ": "  
+    rag_message += r.page_content + "\n"
+
+rag_message += "User: " + human_msg.content 
+messages = [system_msg, human_msg, ai_msg]
+
+response = model.invoke(messages)
+print(response.content)
+

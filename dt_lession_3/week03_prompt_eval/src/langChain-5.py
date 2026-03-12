@@ -1,11 +1,13 @@
 import os
 from dotenv import load_dotenv
-from langchain_groq import ChatGroq
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain.messages import HumanMessage, AIMessage, SystemMessage
 from langchain_community.document_loaders import PyPDFLoader, DirectoryLoader
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
+from langchain_community.utilities import SQLDatabase
+import db_sqlite
+import sqlite3
 
 load_dotenv()
 
@@ -25,12 +27,6 @@ data_path = os.path.join(base_dir, "data")
 chroma_path = os.path.join(base_dir, "chroma")
 
 
-# Create a Groq chat model instance
-# model = ChatGroq(
-#     model="qwen/qwen3-32b",  
-#     temperature=0
-# )
-
 model = ChatOpenAI(
     model="qwen3",
     api_key=os.environ["GPUSTACK_API_KEY"],  
@@ -42,6 +38,7 @@ modelEmbedding = OpenAIEmbeddings(
     api_key=os.environ["GPUSTACK_API_KEY"],  
     base_url="https://gpustack.ing.unibs.it/v1"
 )
+
 
 # Messages (history)
 
@@ -72,22 +69,28 @@ for doc in docs:
     id=id+1
 
 
-# Embedding and Croma (vector database)
 
-vector_store = Chroma(
-    collection_name="RAG_vector_db",
-    embedding_function=modelEmbedding,
-    persist_directory=chroma_path,
-)
+system_msg = SystemMessage('''You are a helpful assistant.''')
+human_msg = HumanMessage("Hello, Make an sql query and take all elements of the table: the schema is [id, page, doc_content]. " \
+                        "The output must be a SQLite query between << here >>")
+ai_msg = AIMessage("")  # to give a start to the ai
+
+
 
 # aggiunta docs al db
-vector_store.add_documents(documents=db_docs, ids=db_ids)
+
+# for i, doc in enumerate(db_docs):
+#     db_sqlite.add_doc_to_sqlite_db(i,doc.metadata["page"],doc.page_content)
 
 
-results = vector_store.similarity_search(
-    "Multi-Head Attention",
-    k=2
-)
-for res in results:
-    print(f"* {res.page_content} [{res.metadata}]")
-    print(res)
+# DB SQLite
+conn = sqlite3.connect("rag.db")
+cursor = conn.cursor()
+
+cursor.execute("""SELECT * FROM docs""")
+rows = cursor.fetchall()
+
+for row in rows:
+    print("\n==========")
+    print(row)
+

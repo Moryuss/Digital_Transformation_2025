@@ -40,13 +40,6 @@ modelEmbedding = OpenAIEmbeddings(
 )
 
 
-# Messages (history)
-
-system_msg = SystemMessage("You are a helpful assistant.")
-human_msg = HumanMessage("Hello, Who are you?")
-
-messages = [system_msg, human_msg]
-
 # document loading - automatic chunking 
 docs = load_pdf(data_path)
 db_docs =[]
@@ -71,26 +64,27 @@ for doc in docs:
 
 
 system_msg = SystemMessage('''You are a helpful assistant.''')
-human_msg = HumanMessage("Hello, Make an sql query and take all elements of the table: the schema is [id, page, doc_content]. " \
-                        "The output must be a SQLite query between << here >>")
+human_msg = HumanMessage("Hello, Make an sql query and take the first element of the table: the schema is [id, page, doc_content]. The table name is docs" \
+                        "The output must be a valid SQLite query, nothing more /nothink")
 ai_msg = AIMessage("")  # to give a start to the ai
 
 
-
+messages=[system_msg,human_msg]
 # aggiunta docs al db
 
 # for i, doc in enumerate(db_docs):
 #     db_sqlite.add_doc_to_sqlite_db(i,doc.metadata["page"],doc.page_content)
 
 
-# DB SQLite
-conn = sqlite3.connect("rag.db")
-cursor = conn.cursor()
+# DB SQLite print docs
+# conn = sqlite3.connect("rag.db")
+# cursor = conn.cursor()
 
-cursor.execute("""SELECT * FROM docs""")
-rows = cursor.fetchall()
+# cursor.execute("""SELECT * FROM docs""")
+# rows = cursor.fetchall()
 
-for row in rows:
-    print("\n==========")
-    print(row)
+response = model.invoke(messages)
+
+print(response.content)
+db_sqlite.execute_query(response.content)
 

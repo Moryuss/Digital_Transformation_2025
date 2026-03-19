@@ -18,3 +18,12 @@ def createDB():
                 )
                 """)
     conn.close()
+
+def execute_query(query):
+    conn =sqlite3.connect("rag.db")
+    cursor = conn.cursor()
+    cursor.execute(query)
+    rows = cursor.fetchall()
+    for row in rows:
+        print(row)
+    conn.close()

@@ -36,3 +36,38 @@ WHERE {
   }
 ORDER BY DESC(?revenue) 
 LIMIT 10
+
+
+SELECT ?nameLabel ?creationDateLabel ?revenue
+WHERE {
+  ?name wdt:P31 wd:Q1058914.
+  ?creationDate wdt:P571 ?nameLabel.
+  ?name wdt:P2139 ?revenue.
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],mul,en". }
+
+}
+ORDER BY DESC(?revenue)
+LIMIT 20
+
+
+
+# to get the "schema /all links"
+
+SELECT DISTINCT ?nameLabel ?rel ?obj ?desc
+WHERE {
+  ?name wdt:P31 wd:Q1058914.
+  ?name ?rel ?obj.    //this
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],mul,en". }
+
+}
+LIMIT 100
+
+
+SELECT DISTINCT ?nameLabel ?descLabel
+WHERE {
+  ?name wdt:P31 wd:Q1058914.
+  ?name wdt:schema ?descr
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],mul,en". }
+
+}
+LIMIT 100

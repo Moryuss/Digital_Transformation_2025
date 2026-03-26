@@ -13,6 +13,13 @@ def clean_sparql(sparql):
     clean = [{k: v["value"] for k, v in row.items()} for row in sparql]
     return pd.DataFrame(clean)
 
+def text_sparql(sparql: pd.DataFrame):
+    company_list = sparql["itemLabel"]
+    result = "The Biggest software companies (by money) are: "
+    for c in company_list:
+        result += c+","
+    return result
+
 query = '''
 SELECT ?item ?itemLabel
 WHERE {
@@ -23,5 +30,6 @@ WHERE {
   '''
 result = clean_sparql(run_sparql(query))
 print(result)
+print(text_sparql(result))
 
 

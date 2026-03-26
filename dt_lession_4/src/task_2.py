@@ -29,7 +29,8 @@ WHERE {
   LIMIT 20
   '''
 result = clean_sparql(run_sparql(query))
-print(result)
-print(text_sparql(result))
+print((result["itemLabel"].to_numpy() + result["item"].to_numpy()).tolist())
+
+# print(text_sparql(result))
 
 
